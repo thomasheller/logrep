@@ -5,7 +5,7 @@
 if [[ $# -lt 2 ]]
 then
 	echo 'usage: logrep [-i] PATTERN FILE...' >&2
-	exit 1
+	exit 2
 fi
 
 if ! command -v soffice >/dev/null
@@ -23,6 +23,8 @@ fi
 pattern="$1"
 shift
 
+found=0
+
 for i in "$@"
 do
 	if [[ ! -r "$i" ]]
@@ -33,7 +35,13 @@ do
 
 	if zipgrep -l "$grepopts" "$pattern" "$i" | grep '^content\.xml$' >/dev/null
 	then
+		found=1
 		echo "$i"
 	fi
 done
+
+if [[ $found -eq 0 ]]
+then
+	exit 1
+fi
 
