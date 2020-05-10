@@ -1,0 +1,39 @@
+#!/bin/bash
+
+# Search LibreOffice files with zipgrep
+
+if [[ $# -lt 2 ]]
+then
+	echo 'usage: logrep [-i] PATTERN FILE...' >&2
+	exit 1
+fi
+
+if ! command -v soffice >/dev/null
+then
+	echo 'error: zipgrep not found' >&2
+	exit 2
+fi
+
+if [[ $1 == '-i' ]]
+then
+	grepopts="$1"
+	shift
+fi
+
+pattern="$1"
+shift
+
+for i in "$@"
+do
+	if [[ ! -r "$i" ]]
+	then
+		echo "warning: file not readable: $i" >/dev/stderr >&2
+		continue
+	fi
+
+	if zipgrep -l "$grepopts" "$pattern" "$i" | grep '^content\.xml$' >/dev/null
+	then
+		echo "$i"
+	fi
+done
+
