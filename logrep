@@ -33,7 +33,7 @@ do
 		continue
 	fi
 
-	if zipgrep -l "$grepopts" "$pattern" "$i" | grep '^content\.xml$' >/dev/null
+	if zipgrep -l "$grepopts" "$pattern" -- "$i" 2>&1 | grep '^content\.xml$' >/dev/null
 	then
 		found=1
 		echo "$i"
